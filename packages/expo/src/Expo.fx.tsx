@@ -44,19 +44,17 @@ if (Platform.OS !== 'web' && !window.navigator?.geolocation) {
   };
 }
 
-if (!isManagedEnvironment) {
-  // Asserts if bare workflow isn't setup correctly.
-  if (NativeModulesProxy.ExpoUpdates?.isMissingRuntimeVersion) {
-    const message =
-      'expo-updates is installed but there is no runtime or SDK version configured. ' +
-      "You'll need to configure one of these two properties in " +
-      Platform.select({ ios: 'Expo.plist', android: 'AndroidManifest.xml' }) +
-      ' before OTA updates will work properly.';
-    if (__DEV__) {
-      console.warn(message);
-    } else {
-      throw new Error(message);
-    }
+// Asserts if bare workflow isn't setup correctly.
+if (NativeModulesProxy.ExpoUpdates?.isMissingRuntimeVersion) {
+  const message =
+    'expo-updates is installed but there is no runtime or SDK version configured. ' +
+    "You'll need to configure one of these two properties in " +
+    Platform.select({ ios: 'Expo.plist', android: 'AndroidManifest.xml' }) +
+    ' before OTA updates will work properly.';
+  if (__DEV__) {
+    console.warn(message);
+  } else {
+    throw new Error(message);
   }
 }
 
