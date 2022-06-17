@@ -176,6 +176,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Button, Platform } from 'react-native';
+import { Subscription } from 'expo-modules-core';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -186,10 +187,10 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  const [expoPushToken, setExpoPushToken] = useState<string>('');
+  const [notification, setNotification] = useState<Notifications.Notification | boolean>(false);
+  const notificationListener = useRef<Subscription>();
+  const responseListener = useRef<Subscription>();
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -203,8 +204,12 @@ export default function App() {
     });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
+      if(notificationListener.current){
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+      if(responseListener.current){
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
     };
   }, []);
 
